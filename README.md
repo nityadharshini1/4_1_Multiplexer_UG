@@ -37,14 +37,16 @@ module mux4_gate (
     input  wire S0, S1,
     output wire Y
 );
-    // Declare internal wires
-
-    // Write NOT gates
-
-    // Write AND gates
-
-    // Write OR gate
-
+    
+    wire S0_bar, S1_bar;
+    wire w0, w1, w2, w3;
+    not (S0_bar, S0);
+    not (S1_bar, S1);
+    and (w0, I0, S1_bar, S0_bar); 
+    and (w1, I1, S1_bar, S0);     
+    and (w2, I2, S1, S0_bar);    
+    and (w3, I3, S1, S0);         
+    or (Y, w0, w1, w2, w3);
 endmodule
 ```
 4:1 MUX Gate-Level Implementation- Testbench
@@ -66,33 +68,24 @@ module tb_mux4_gate;
     );
 
     initial begin
-        // Initialize inputs
-
-        // Apply test cases
-
-        // Stop simulation
-        #10 $stop;
+        I0 = 1; I1 = 0; I2 = 0; I3 = 0;
+    S1 = 0; S0 = 0;
+    #10;
+       I0 = 0; I1 = 1; I2 = 0; I3 = 0;
+    S1 = 0; S0 = 1;
+        #10 ;
+$stop;
     end
 
 endmodule
+
+
 ```
 # Simulated Output Gate Level Modelling
-______ Here Paste the Simulated output ___________
+![WhatsApp Image 2026-02-25 at 3 13 57 PM](https://github.com/user-attachments/assets/ed7c2c07-4968-42c2-8564-9cff8786f539)
+
 
 4:1 MUX Data flow Modelling
-```
-// Dataflow Modelling - Skeleton
-module mux4_dataflow (
-    input  wire I0, I1, I2, I3,
-    input  wire S0, S1,
-    output wire Y
-);
-    // Write assign statement using operators
-
-endmodule
-```
-4:1 MUX Data flow Modelling- Testbench
-```
 // Testbench Skeleton
 `timescale 1ns/1ps
 module tb_mux4_dataflow;
@@ -110,18 +103,21 @@ module tb_mux4_dataflow;
     );
 
     initial begin
-        // Initialize inputs
-
-        // Apply test cases
-
-        // Stop simulation
+        I0 = 0; I1 = 0; I2 = 0; I3 = 0;
+    S0 = 0; S1 = 0;
+     #10
+     I0 = 1; I1 = 0; I2 = 0; I3 = 0;  S1 = 0; S0 = 0;
         #10 $stop;
     end
 
 endmodule
 ```
+4:1 MUX Data flow Modelling- Testbench
+```
+
 # Simulated Output Dataflow Modelling
-_______ Here Paste the Simulated output ___________
+<img width="1574" height="928" alt="553305635-9a197673-980d-41a9-abc1-d3738b7eb2f7" src="https://github.com/user-attachments/assets/9441b036-27c4-42fe-8346-b3311ec8cdeb" />
+
 
 4:1 MUX Behavioral Implementation
 ```
@@ -135,12 +131,18 @@ module mux4_to_1_behavioral (
     output reg Y
 );
     always @(*) begin
+case ({S1,S0})
+            2'b00: Y = A;  
+            2'b01: Y = B;   
+            2'b10: Y = C;   
+            2'b11: Y = D;   
+            default: Y = 0;
+        endcase
         
     end
 endmodule
 ```
 #4:1 MUX Behavioral Modelling- Testbench
-```
 // Testbench Skeleton
 `timescale 1ns/1ps
 module tb_mux4_behavioral;
@@ -158,21 +160,24 @@ module tb_mux4_behavioral;
     );
 
     initial begin
-        // Initialize inputs
-
-        // Apply test cases
-
-        // Stop simulation
+      A = 0; B = 0; C = 0; D = 0;
+    S0 = 0; S1 = 0;
+    #10 A = 1; B = 0; C = 0; D = 0; S1 = 0; S0 = 0;
+    #10 A = 0; B = 1; C = 0; D = 0; S1 = 0; S0 = 1;
+    #10 A = 0; B = 0; C = 1; D = 0; S1 = 1; S0 = 0;
+    #10 A = 0; B = 0; C = 0; D = 1; S1 = 1; S0 = 1;
         #10 $stop;
     end
 
 endmodule
+
+
+  
 ```
 # Simulated Output Behavioral Modelling
-_______ Here Paste the Simulated output ___________
+<img width="1574" height="928" alt="image" src="https://github.com/user-attachments/assets/0bf4b269-08ec-4770-baa8-8bc6c60ec8cc" />
 
 #4:1 MUX Structural Implementation
-```
 module mux2_to_1 (
     input wire A,
     input wire B,
@@ -191,6 +196,12 @@ module mux4_to_1_structural (
     input wire S1,
     output wire Y
 );
+ wire w1, w2;
+    mux2_to_1 M1 (.A(A), .B(B), .S(S0), .Y(w1));
+    mux2_to_1 M2 (.A(C), .B(D), .S(S0), .Y(w2));
+    mux2_to_1 M3 (.A(w1), .B(w2), .S(S1), .Y(Y));
+
+endmodule
 ```
 # Testbench Implementation
 ```
@@ -204,17 +215,19 @@ module mux4_to_1_tb;
 
     initial begin
         A = 0; B = 0; C = 0; D = 0; S0 = 0; S1 = 0;
-
+ S0 = 0; S1 = 0;
+    #10 A = 1; B = 0; C = 0; D = 0; S1 = 0; S0 = 0;
+    #10 A = 0; B = 1; C = 0; D = 0; S1 = 0; S0 = 1;
+    #10 A = 0; B = 0; C = 1; D = 0; S1 = 1; S0 = 0;
+    #10 A = 0; B = 0; C = 0; D = 1; S1 = 1; S0 = 1;
+    #10 $stop;
       
         #10 $stop;
-    end
-
-   
     end
 endmodule
 ```
 # Simulated Output Structural Modelling
-_______ Here Paste the Simulated output ___________
+![WhatsApp Image 2026-02-25 at 3 13 57 PM](https://github.com/user-attachments/assets/617e9e33-5c41-4edb-b270-19e8857989f3)
 
 # CONCLUSION
 In this experiment, a 4:1 Multiplexer was successfully designed and simulated using Verilog HDL across four different modeling styles: Gate-Level, Data Flow, Behavioral, and Structural.The simulation results verified the correct functionality of the MUX, with all implementations producing identical outputs for the given input conditions.
