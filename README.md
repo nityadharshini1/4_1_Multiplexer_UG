@@ -189,8 +189,10 @@ endmodule
 
   
 ```
+
 # Simulated Output Behavioral Modelling
-<img width="1574" height="928" alt="image" src="https://github.com/user-attachments/assets/0bf4b269-08ec-4770-baa8-8bc6c60ec8cc" />
+
+
 
 #4:1 MUX Structural Implementation
 module mux_4_1_str(a,b,c,d,s1,s0,y);
