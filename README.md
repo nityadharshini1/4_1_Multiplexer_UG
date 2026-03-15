@@ -160,29 +160,28 @@ module mux_4_1_bhv(a,b,c,d,s,y);
 endmodule
 ```
 #4:1 MUX Behavioral Modelling- Testbench
-`timescale 1ns / 1ps
 
-module mux_4_1_tb;
+module tb_mux4_behavioral;
 
-    reg a,b,c,d;
-    reg [1:0] s;
-    wire y;
 
-    mux_4_1_bhv dut (a,b,c,d,s,y);
+    reg I0, I1, I2, I3;
+    reg S0, S1;
+    wire Y;
 
-    initial 
-    begin
-        a=1'b0;
-        b=1'b1;
-        c=1'b1;
-        d=1'b0;
-        s=2'b01;
-    #100
-        a=1'b1;
-        b=1'b0;
-        c=1'b0;
-        d=1'b1;
-        s=2'b11;
+    mux4_behavioral uut (
+        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
+        .S0(S0), .S1(S1),
+        .Y(Y)
+    );
+
+    initial begin
+      A = 0; B = 0; C = 0; D = 0;
+    S0 = 0; S1 = 0;
+    #10 A = 1; B = 0; C = 0; D = 0; S1 = 0; S0 = 0;
+    #10 A = 0; B = 1; C = 0; D = 0; S1 = 0; S0 = 1;
+    #10 A = 0; B = 0; C = 1; D = 0; S1 = 1; S0 = 0;
+    #10 A = 0; B = 0; C = 0; D = 1; S1 = 1; S0 = 1;
+        #10 ;
     end
 
 endmodule
