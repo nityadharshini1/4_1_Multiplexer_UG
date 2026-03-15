@@ -192,7 +192,7 @@ endmodule
 ```
 
 # Simulated Output Behavioral Modelling
-
+![WhatsApp Image 2026-02-25 at 3 13 57 PM](https://github.com/user-attachments/assets/617e9e33-5c41-4edb-b270-19e8857989f3)
 
 
 #4:1 MUX Structural Implementation
