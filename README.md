@@ -51,34 +51,34 @@ endmodule
 ```
 4:1 MUX Gate-Level Implementation- Testbench
 ```
-// Testbench Skeleton
-`timescale 1ns/1ps
-module tb_mux4_gate;
+`timescale 1ns / 1ps
 
-    // Declare testbench signals
-    reg I0, I1, I2, I3;
-    reg S0, S1;
-    wire Y;
+module mux_4_1_tb;
 
-    // Instantiate DUT
-    mux4_gate uut (
-        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
-        .S0(S0), .S1(S1),
-        .Y(Y)
-    );
+    reg a,b,c,d;
+    reg s1,s2;
+    wire y;
 
-    initial begin
-        I0 = 1; I1 = 0; I2 = 0; I3 = 0;
-    S1 = 0; S0 = 0;
-    #10;
-       I0 = 0; I1 = 1; I2 = 0; I3 = 0;
-    S1 = 0; S0 = 1;
-        #10 ;
-$stop;
+    mux_4_1_gl dut (a,b,c,d,s1,s2,y);
+
+    initial 
+    begin
+        a=1'b0;
+        b=1'b0;
+        c=1'b1;
+        d=1'b0;
+        s2=1'b1;
+        s1=1'b0;
+    #100
+        a=1'b1;
+        b=1'b0;
+        c=1'b0;
+        d=1'b1;
+        s2=1'b1;
+        s1=1'b1;
     end
 
 endmodule
-
 
 ```
 # Simulated Output Gate Level Modelling
@@ -86,33 +86,55 @@ endmodule
 
 
 4:1 MUX Data flow Modelling
-// Testbench Skeleton
-`timescale 1ns/1ps
-module tb_mux4_dataflow;
+module mux_4_1_df(a,b,c,d,s1,s0,y);
+    input a,b,c,d,s1,s0;
+    output y;
+    
+    assign y =   (s1 == 0 && s0 == 0) ? a:
+                 (s1 == 0 && s0 == 1) ? b:
+                 (s1 == 1 && s0 == 0) ? c: 
+                 (s1 == 1 && s0 == 1) ? d: 1'b0;
+                                         
+endmodule
 
-    // Declare testbench signals
-    reg I0, I1, I2, I3;
-    reg S0, S1;
-    wire Y;
 
-    // Instantiate DUT
-    mux4_dataflow uut (
-        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
-        .S0(S0), .S1(S1),
-        .Y(Y)
-    );
+```
+4:1 MUX Data flow Modelling- Testbench
+`timescale 1ns / 1ps
 
-    initial begin
-        I0 = 0; I1 = 0; I2 = 0; I3 = 0;
-    S0 = 0; S1 = 0;
-     #10
-     I0 = 1; I1 = 0; I2 = 0; I3 = 0;  S1 = 0; S0 = 0;
-        #10 $stop;
+module mux_4_1_tb;
+
+    reg a,b,c,d;
+    reg s1,s0;
+    wire y;
+
+    mux_4_1_df dut (a,b,c,d,s1,s0,y);
+
+    initial 
+    begin
+        a=1'b0;
+        b=1'b1;
+        c=1'b1;
+        d=1'b0;
+        s1=1'b0;
+        s0=1'b1;
+    #100
+        a=1'b1;
+        b=1'b0;
+        c=1'b0;
+        d=1'b1;
+        s1=1'b1;
+        s0=1'b1;
     end
 
 endmodule
-```
-4:1 MUX Data flow Modelling- Testbench
+
+
+
+
+
+
+
 ```
 
 # Simulated Output Dataflow Modelling
@@ -121,52 +143,46 @@ endmodule
 
 4:1 MUX Behavioral Implementation
 ```
-module mux4_to_1_behavioral (
-    input wire A,
-    input wire B,
-    input wire C,
-    input wire D,
-    input wire S0,
-    input wire S1,
-    output reg Y
-);
-    always @(*) begin
-case ({S1,S0})
-            2'b00: Y = A;  
-            2'b01: Y = B;   
-            2'b10: Y = C;   
-            2'b11: Y = D;   
-            default: Y = 0;
+module mux_4_1_bhv(a,b,c,d,s,y);
+    input a,b,c,d;
+    input [1:0] s;
+    output reg y;
+    always @(*) 
+    begin
+        case (s)
+            2'b00: y = a;
+            2'b01: y = b;
+            2'b10: y = c;
+            2'b11: y = d;
+            default: y = 1'b0;
         endcase
-        
     end
 endmodule
 ```
 #4:1 MUX Behavioral Modelling- Testbench
-// Testbench Skeleton
-`timescale 1ns/1ps
-module tb_mux4_behavioral;
+`timescale 1ns / 1ps
 
-    // Declare testbench signals
-    reg I0, I1, I2, I3;
-    reg S0, S1;
-    wire Y;
+module mux_4_1_tb;
 
-    // Instantiate DUT
-    mux4_behavioral uut (
-        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
-        .S0(S0), .S1(S1),
-        .Y(Y)
-    );
+    reg a,b,c,d;
+    reg [1:0] s;
+    wire y;
 
-    initial begin
-      A = 0; B = 0; C = 0; D = 0;
-    S0 = 0; S1 = 0;
-    #10 A = 1; B = 0; C = 0; D = 0; S1 = 0; S0 = 0;
-    #10 A = 0; B = 1; C = 0; D = 0; S1 = 0; S0 = 1;
-    #10 A = 0; B = 0; C = 1; D = 0; S1 = 1; S0 = 0;
-    #10 A = 0; B = 0; C = 0; D = 1; S1 = 1; S0 = 1;
-        #10 $stop;
+    mux_4_1_bhv dut (a,b,c,d,s,y);
+
+    initial 
+    begin
+        a=1'b0;
+        b=1'b1;
+        c=1'b1;
+        d=1'b0;
+        s=2'b01;
+    #100
+        a=1'b1;
+        b=1'b0;
+        c=1'b0;
+        d=1'b1;
+        s=2'b11;
     end
 
 endmodule
@@ -178,53 +194,57 @@ endmodule
 <img width="1574" height="928" alt="image" src="https://github.com/user-attachments/assets/0bf4b269-08ec-4770-baa8-8bc6c60ec8cc" />
 
 #4:1 MUX Structural Implementation
-module mux2_to_1 (
-    input wire A,
-    input wire B,
-    input wire S,
-    output wire Y
-);
-    assign Y = S ? B : A;
+module mux_4_1_str(a,b,c,d,s1,s0,y);
+    input a,b,c,d,s1,s0;
+    output y;
+    wire y1,y2;
+    
+    mux_2_1 m1 (a,b,s0,y1);
+    mux_2_1 m2 (c,d,s0,y2);
+    mux_2_1 m3 (y1,y2,s1,y);
+    
+endmodule    
+
+module mux_2_1(a,b,s,y);
+    input a,b,s;
+    output y;    
+    assign y = (s) ? b : a;
 endmodule
 
-module mux4_to_1_structural (
-    input wire A,
-    input wire B,
-    input wire C,
-    input wire D,
-    input wire S0,
-    input wire S1,
-    output wire Y
-);
- wire w1, w2;
-    mux2_to_1 M1 (.A(A), .B(B), .S(S0), .Y(w1));
-    mux2_to_1 M2 (.A(C), .B(D), .S(S0), .Y(w2));
-    mux2_to_1 M3 (.A(w1), .B(w2), .S(S1), .Y(Y));
 
-endmodule
+
 ```
 # Testbench Implementation
 ```
 `timescale 1ns / 1ps
 
-module mux4_to_1_tb;
-    reg A, B, C, D, S0, S1;
-    wire Y_gate, Y_dataflow, Y_behavioral, Y_structural;
+module mux_4_1_tb;
 
-    
+    reg a,b,c,d,s1,s0;
+    wire y;
 
-    initial begin
-        A = 0; B = 0; C = 0; D = 0; S0 = 0; S1 = 0;
- S0 = 0; S1 = 0;
-    #10 A = 1; B = 0; C = 0; D = 0; S1 = 0; S0 = 0;
-    #10 A = 0; B = 1; C = 0; D = 0; S1 = 0; S0 = 1;
-    #10 A = 0; B = 0; C = 1; D = 0; S1 = 1; S0 = 0;
-    #10 A = 0; B = 0; C = 0; D = 1; S1 = 1; S0 = 1;
-    #10 $stop;
-      
-        #10 $stop;
+    mux_4_1_str dut (a,b,c,d,s1,s0,y);
+
+    initial 
+    begin
+        a=1'b0;
+        b=1'b1;
+        c=1'b1;
+        d=1'b0;
+        s1=1'b0;
+        s0=1'b1;
+    #100
+        a=1'b1;
+        b=1'b0;
+        c=1'b0;
+        d=1'b1;
+        s1=1'b1;
+        s0=1'b0;
+    #100 $stop;
     end
+
 endmodule
+
 ```
 # Simulated Output Structural Modelling
 ![WhatsApp Image 2026-02-25 at 3 13 57 PM](https://github.com/user-attachments/assets/617e9e33-5c41-4edb-b270-19e8857989f3)
