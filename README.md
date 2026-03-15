@@ -161,6 +161,7 @@ endmodule
 ```
 #4:1 MUX Behavioral Modelling- Testbench
 
+
 module tb_mux4_behavioral;
 
 
@@ -187,7 +188,7 @@ module tb_mux4_behavioral;
 endmodule
 
 
-  
+
 ```
 
 # Simulated Output Behavioral Modelling
@@ -195,6 +196,7 @@ endmodule
 
 
 #4:1 MUX Structural Implementation
+
 module mux_4_1_str(a,b,c,d,s1,s0,y);
     input a,b,c,d,s1,s0;
     output y;
