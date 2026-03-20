@@ -192,30 +192,35 @@ endmodule
 ```
 
 # Simulated Output Behavioral Modelling
+<img width="1574" height="928" alt="image" src="https://github.com/user-attachments/assets/14528731-1529-4997-bb21-5e33abe76f54" />
 
-![WhatsApp Image 2026-02-25 at 3 13 57 PM](https://github.com/user-attachments/assets/ade69567-3b7e-4772-8d0a-aa3ad0ba6d67)
 
 #4:1 MUX Structural Implementation
 
-module mux_4_1_str(a,b,c,d,s1,s0,y);
-    input a,b,c,d,s1,s0;
-    output y;
-    wire y1,y2;
-    
-    mux_2_1 m1 (a,b,s0,y1);
-    mux_2_1 m2 (c,d,s0,y2);
-    mux_2_1 m3 (y1,y2,s1,y);
-    
-endmodule    
-
-module mux_2_1(a,b,s,y);
-    input a,b,s;
-    output y;    
-    assign y = (s) ? b : a;
+module mux2_to_1 (
+    input wire A,
+    input wire B,
+    input wire S,
+    output wire Y
+);
+    assign Y = S ? B : A;
 endmodule
 
+module mux4_to_1_structural (
+    input wire A,
+    input wire B,
+    input wire C,
+    input wire D,
+    input wire S0,
+    input wire S1,
+    output wire Y
+);
+ wire w1, w2;
+    mux2_to_1 M1 (.A(A), .B(B), .S(S0), .Y(w1));
+    mux2_to_1 M2 (.A(C), .B(D), .S(S0), .Y(w2));
+    mux2_to_1 M3 (.A(w1), .B(w2), .S(S1), .Y(Y));
 
-
+endmodule
 ```
 # Testbench Implementation
 ```
